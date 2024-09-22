@@ -65,25 +65,37 @@ class Piece:
 
         if(self.num == 0):
             table = IKICKS
+            if(self.num == 0):
+                if(self.state == 0):
+                    newPiece.center[0] += 1
+                if(self.state == 1):
+                    newPiece.center[1] -= 1
+                if(self.state == 2):                        
+                    newPiece.center[0] -= 1
+                if(self.state == 3):
+                    newPiece.center[1] += 1
+            center = copy.copy(newPiece.center)
             for x in newPiece.shape:
                 tempX = x[0]
                 tempY = x[1]
-                x[0] = tempY + 1
+                x[0] = tempY 
                 x[1] = tempX * -1
+
         else:
             for x in newPiece.shape:
                 tempX = x[0]
                 tempY = x[1]
                 x[0] = tempY
                 x[1] = tempX * -1
+            center = copy.copy(newPiece.center)
 
         newPiece.state = (1 + self.state) % 4
 
         for kick in range(len(table[self.state])):
-            newPiece.center[0] = self.center[0] + table[self.state][kick][0]
-            newPiece.center[1] = self.center[1] + table[self.state][kick][1]
+            newPiece.center[0] = center[0] + table[self.state][kick][0]
+            newPiece.center[1] = center[1] + table[self.state][kick][1]
             if(self.tryMove(newPiece)):
-                return True
+                return True 
         return False
     
     def ccw(self):
@@ -94,11 +106,20 @@ class Piece:
 
         if(self.num == 0):
             table = IKICKS
+            if(self.num == 0):
+                if(self.state == 0):
+                    newPiece.center[1] -= 1
+                if(self.state == 1):
+                    newPiece.center[0] -= 1
+                if(self.state == 2):                        
+                    newPiece.center[1] += 1
+                if(self.state == 3):
+                    newPiece.center[0] += 1
             for x in newPiece.shape:
                 tempX = x[0]
                 tempY = x[1]
                 x[0] = tempY * -1
-                x[1] = tempX - 1
+                x[1] = tempX
         else:
             for x in newPiece.shape:
                 tempX = x[0]
@@ -106,11 +127,12 @@ class Piece:
                 x[0] = tempY * -1
                 x[1] = tempX
         newPiece.state = (self.state - 1) % 4
+        center = copy.copy(newPiece.center)
 
         for kick in range(len(table[self.state])):
             kickNum = (self.state - 1) % 4
-            newPiece.center[0] = self.center[0] - table[kickNum][kick][0]
-            newPiece.center[1] = self.center[1] - table[kickNum][kick][1]
+            newPiece.center[0] = center[0] - table[kickNum][kick][0]
+            newPiece.center[1] = center[1] - table[kickNum][kick][1]
             if(self.tryMove(newPiece)):
                 return True
         return False

@@ -45,7 +45,10 @@ COLORS = ["#0f9bd8", "#2142c7", "#e35b03", "#e39e02", "#59b202", "#af298a", "#d7
 
 
 #Extras
-GHOST = True
+GHOST = False
+
+#Toggles reinforcement training
+AI = True
 
 #Score information
 #in order Single, Double, Triple, Tetris

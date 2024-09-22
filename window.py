@@ -2,8 +2,11 @@ import tkinter as tk
 import sched, time
 from tkinter import *
 from game import Board
-from config import windowTitle, BOARD_HEIGHT, BOARD_WIDTH, BLOCKSZ, GHOST, DAS, ARR, SDR, NEXT, COLORS
+from config import windowTitle, BOARD_HEIGHT, BOARD_WIDTH, BLOCKSZ, GHOST, DAS, ARR, SDR, NEXT, COLORS, AI
 from piece import Piece
+
+from reinforcementlearning import select_action
+from RLhelper import *
 
 class Window:
     def __init__(self) -> None:
@@ -80,6 +83,7 @@ class Window:
             case "z":
                 self.boardState.curPiece.ccw()
                 self.retryDas()
+                
             case "x":
                 self.boardState.curPiece.rotate180()
                 self.retryDas()
@@ -87,12 +91,32 @@ class Window:
                 self.boardState = Board()
                 self.drawQueue()
                 self.drawHold()
+                reset()
             case "c":
                 self.boardState.hold()
                 self.retryDas()
                 self.drawHold()
                 self.drawQueue()
-        self.dRepeat()
+            case "p":
+                valid = getValidActions(self.boardState)
+                print(valid)
+                print()
+                print(str(len(valid)) + " valid options")
+                action = select_action(self.boardState)
+                action = (numToAction(action))
+                print("action:" + str(action))
+                success, reward = placePiece(self.boardState, action[1], action[2], action[3], action[4])
+                print("reward: " + str(reward))
+            case "o":
+                state = self.boardState.toList()
+                print(state[0:6])
+                for i in range(10):
+                    print (state[(6+i*24):(6+(i+1)*24)])
+            case "d":
+                print(getFlatness(self.boardState))
+                print(self.boardState.toList())
+                print(np.shape(self.boardState.toList()))
+
                 
         if GHOST:
             self.boardState.updateGhost()

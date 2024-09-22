@@ -1,6 +1,7 @@
 from config import BOARD_HEIGHT, BOARD_WIDTH, SPAWNLOC, GHOST, SCORES
 from piece import Piece
 import random
+import numpy as np
 
 class Board(object):
 #initialize empty board, get pieces
@@ -11,6 +12,7 @@ class Board(object):
         self.curPiece = self.generatePiece()
         self.holdPiece = None
         self.score = 0
+        self.lastScore = 0
 
         self.finished = False
         self.pieceCount = 0
@@ -18,7 +20,6 @@ class Board(object):
         if GHOST:
             self.ghostPiece = Piece(self.curPiece.num, self.boardArr, self.curPiece)
             self.ghostPiece.goDown()
-
 
 # Pops and returns a piece number from the queue
     def generatePiece(self):
@@ -52,6 +53,7 @@ class Board(object):
         if(self.pieceCount > 100):
             self.finished = True
         self.curPiece = self.generatePiece()
+    
 
 #Clears lines, if necessary
     def clearLines(self):
@@ -67,15 +69,19 @@ class Board(object):
                 for j in range(i, BOARD_HEIGHT - 1):
                     for k in range(BOARD_WIDTH):
                         self.boardArr[k][j] = self.boardArr[k][j+1]
+        
+        add = 0
         match cnt:
             case 1:
-                self.score += SCORES[0]
+                add += SCORES[0]
             case 2:
-                self.score += SCORES[1]
+                add += SCORES[1]
             case 3:
-                self.score += SCORES[2]
+                add += SCORES[2]
             case 4:
-                self.score += SCORES[3]
+                add += SCORES[3]
+        self.score += add
+        self.lastScore = add
                 
         return cnt
     
@@ -90,3 +96,13 @@ class Board(object):
             self.curPiece.center = SPAWNLOC
 
             
+    def toList(self):
+        l = np.ndarray(shape=(246,), dtype=int)
+        l[0] = self.curPiece.num
+        for i in range(5):
+            l[i+1] = (self.queue[i])
+        for i in range(len(self.boardArr)):
+            for j in range(len(self.boardArr[0])):
+                l[i * len(self.boardArr[0]) + j + 6] = int(bool(self.boardArr[i][j]))
+        return l
+        
